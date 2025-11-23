@@ -46,7 +46,8 @@ pipeline {
             steps {
                 sh '''
                     # Copy kubeconfig to Jenkins (done once, or on every run)
-                    export KUBECONFIG=/home/ubuntu/kubeconfig/config
+                    
+                    export KUBECONFIG = /home/ubuntu/kubeconfig/config
 
 
                     # Verify connectivity

@@ -1,7 +1,5 @@
 pipeline{
-    agent{ 
-                label 'kmaster'
-            }
+    agent
     environment {
         DOCKERHUB_CREDENTIALS=credentials('b3b25228-666d-4167-b34a-2183c205a2b2')
     }

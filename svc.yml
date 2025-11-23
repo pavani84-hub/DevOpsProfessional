@@ -7,6 +7,6 @@ type: NodePort
 ports:
 - targetPort: 85
 port: 80
-nodePort: 30008
+nodePort: 30085
 selector:
 app: custom

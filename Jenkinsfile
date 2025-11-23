@@ -1,6 +1,6 @@
 pipeline {
 
-    agent { label 'kmaster' }
+    agent none
 
     environment {
         // Using the DockerHub credential ID created by Jenkins

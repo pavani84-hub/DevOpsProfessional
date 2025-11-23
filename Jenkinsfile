@@ -54,7 +54,8 @@ pipeline {
                     kubectl cluster-info
                     kubectl get nodes
                     echo "=== APPLYING KUBERNETES FILES ==="
-                    kubectl --kubeconfig /home/ubuntu/kubeconfig/config apply -f deploy.yml
+                    kubectl --kubeconfig /home/ubuntu/kubeconfig/config apply -f deploy.yml --validate=false
+
 
                     kubectl apply -f svc.yml
                 '''

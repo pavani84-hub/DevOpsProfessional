@@ -20,9 +20,14 @@ pipeline {
 
             steps {
                 sh '''
-                    docker build -t devopspro/image .
+                    echo "===== Building Docker Image ====="
+                    docker build -t devopspro/image:latest .
+
+                    echo "===== DockerHub Login ====="
                     echo "$DOCKERHUB_CREDENTIALS_PSW" | docker login -u "$DOCKERHUB_CREDENTIALS_USR" --password-stdin
-                    docker push devopspro/image
+
+                    echo "===== Pushing Image ====="
+                    docker push devopspro/image:latest
                 '''
             }
         }
@@ -32,6 +37,7 @@ pipeline {
 
             steps {
                 sh '''
+                    echo "===== Deploying to Kubernetes ====="
                     kubectl apply -f deploy.yml
                     kubectl apply -f svc.yml
                 '''

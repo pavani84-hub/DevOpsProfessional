@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-name: my-custom-deployment
+  name: devopspro-service
 spec:
-type: NodePort
-ports:
-- targetPort: 85
-port: 80
-nodePort: 30085
-selector:
-app: custom
+  type: NodePort
+  selector:
+    app: devopspro
+  ports:
+    - port: 85
+      targetPort: 85
+      nodePort: 30085
+

@@ -45,6 +45,13 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
+                    # Copy kubeconfig to Jenkins (done once, or on every run)
+                    echo "$KUBECONFIG_CONTENT" > /tmp/kubeconfig
+                    export KUBECONFIG=/tmp/kubeconfig
+
+                    # Verify connectivity
+                    kubectl cluster-info
+                    kubectl get nodes
                     echo "=== APPLYING KUBERNETES FILES ==="
                     kubectl apply -f deploy.yml
                     kubectl apply -f svc.yml

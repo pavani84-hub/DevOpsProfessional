@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: devopspro-container
-          image: devopspro/image:latest
+          image: pavaniambica/devopspro:latest
+
           imagePullPolicy: Always
           ports:
             - containerPort: 85

@@ -1,43 +1,51 @@
 pipeline {
-    agent none
+
+    agent { label 'kmaster' }
 
     environment {
+        // Using the DockerHub credential ID created by Jenkins
         DOCKERHUB_CREDENTIALS = credentials('b3b25228-666d-4167-b34a-2183c205a2b2')
     }
 
     stages {
 
-        stage('Git Checkout') {
-            agent { label 'kmaster' }
-
+        stage('Checkout Code') {
             steps {
                 git 'https://github.com/pavani84-hub/DevOpsProfessional.git'
             }
         }
 
-        stage('Docker Build & Push') {
-            agent { label 'kmaster' }
-
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                    echo "===== Building Docker Image ====="
-                    docker build -t devopspro/image:latest .
+                    echo "=== BUILDING DOCKER IMAGE ==="
+                    docker build -t pavaniambica/devopspro:latest .
+                '''
+            }
+        }
 
-                    echo "===== DockerHub Login ====="
+        stage('Login to DockerHub') {
+            steps {
+                sh '''
+                    echo "=== LOGGING INTO DOCKER HUB ==="
                     echo "$DOCKERHUB_CREDENTIALS_PSW" | docker login -u "$DOCKERHUB_CREDENTIALS_USR" --password-stdin
+                '''
+            }
+        }
 
-                    echo "===== Pushing Image ====="
-                    docker push devopspro/image:latest
+        stage('Push Docker Image') {
+            steps {
+                sh '''
+                    echo "=== PUSHING IMAGE TO DOCKER HUB ==="
+                    docker push pavaniambica/devopspro:latest
                 '''
             }
         }
 
         stage('Deploy to Kubernetes') {
-            agent { label 'kmaster' }
-
             steps {
                 sh '''
-                    echo "===== Deploying to Kubernetes ====="
+                    echo "=== APPLYING KUBERNETES FILES ==="
                     kubectl apply -f deploy.yml
                     kubectl apply -f svc.yml
                 '''

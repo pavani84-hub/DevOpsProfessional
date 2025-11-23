@@ -1,44 +1,41 @@
-pipeline{
-    agent
+pipeline {
+    agent none
+
     environment {
-        DOCKERHUB_CREDENTIALS=credentials('b3b25228-666d-4167-b34a-2183c205a2b2')
+        DOCKERHUB_CREDENTIALS = credentials('b3b25228-666d-4167-b34a-2183c205a2b2')
     }
-    
-   
-        stage('git'){
-            agent{ 
-                label 'kmaster'
-            }
 
-            steps{
+    stages {
 
-                git'https://github.com/pavani84-hub/DevOpsProfessional.git'
-            }
-        }
-        stage('docker') {
-            agent { 
-                label 'kmaster'
-            }
+        stage('Git Checkout') {
+            agent { label 'kmaster' }
 
             steps {
-
-                sh 'sudo docker build /home/ubuntu/jenkins/workspace/DevOpsPro -t devopspro/image'
-                sh 'sudo echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh 'sudo docker push devopspro/image'
-
+                git 'https://github.com/pavani84-hub/DevOpsProfessional.git'
             }
         }
-        stage('Kubernetes') {
-            agent { 
-                label 'kmaster'
-            }
+
+        stage('Docker Build & Push') {
+            agent { label 'kmaster' }
 
             steps {
-
-                sh 'kubectl create -f deploy.yml'
-                sh 'kubectl create -f svc.yml'
+                sh '''
+                    docker build -t devopspro/image .
+                    echo "$DOCKERHUB_CREDENTIALS_PSW" | docker login -u "$DOCKERHUB_CREDENTIALS_USR" --password-stdin
+                    docker push devopspro/image
+                '''
             }
-        }        
-        
+        }
+
+        stage('Deploy to Kubernetes') {
+            agent { label 'kmaster' }
+
+            steps {
+                sh '''
+                    kubectl apply -f deploy.yml
+                    kubectl apply -f svc.yml
+                '''
+            }
+        }
     }
 }

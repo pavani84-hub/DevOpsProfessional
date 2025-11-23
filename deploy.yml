@@ -1,21 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-name: custom-deployment
-labels:
-app: custom
+  name: devopspro-deployment
+  labels:
+    app: devopspro
 spec:
-replicas: 2
-selector:
-matchLabels:
-app: custom
-template:
-metadata:
-labels:
-app: custom
-spec:
-containers:
-- name: custom
-image: devopspro/image
-ports:
-- containerPort: 85
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devopspro
+  template:
+    metadata:
+      labels:
+        app: devopspro
+    spec:
+      containers:
+        - name: devopspro-container
+          image: devopspro/image:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 85
+
